@@ -454,7 +454,14 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    position, foodGrid = state
+    foodList = foodGrid.asList()
+    if not foodList:
+        return 0
+
+    # Υπολογίζουμε τη μέγιστη Manhattan απόσταση από το Pacman σε κάποιο φαγητό
+    distances = [util.manhattanDistance(position, food) for food in foodList]
+    return max(distances)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

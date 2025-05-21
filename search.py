@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from util import Stack, Queue, PriorityQueue
 
 class SearchProblem:
     """
@@ -87,17 +88,58 @@ def depthFirstSearch(problem):
     print("Start's nextStates:", problem.getNextStates(problem.getInitialState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    stack = Stack()
+    visited = set()
+    stack.push((problem.getInitialState(), []))
+    while not stack.isEmpty():
+        state, path = stack.pop()
+        if problem.isGoalState(state):
+            return path
+        if state not in visited:
+            visited.add(state)
+            for successor, action, cost in problem.getNextStates(state):
+                if successor not in visited:
+                    stack.push((successor, path + [action]))
+    return []
+    """util.raiseNotDefined()"""
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    queue = Queue()
+    visited = set()
+    queue.push((problem.getInitialState(), []))
+    while not queue.isEmpty():
+        state, path = queue.pop()
+        if problem.isGoalState(state):
+            return path
+        if state not in visited:
+            visited.add(state)
+            for successor, action, cost in problem.getNextStates(state):
+                if successor not in visited:
+                    queue.push((successor, path + [action]))
+    return []
+    """util.raiseNotDefined()"""
 
+from util import PriorityQueue
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pq = PriorityQueue()
+    visited = set()
+    pq.push((problem.getInitialState(), [], 0), 0)
+    while not pq.isEmpty():
+        state, path, cost = pq.pop()
+        if problem.isGoalState(state):
+            return path
+        if state not in visited:
+            visited.add(state)
+            for successor, action, stepCost in problem.getNextStates(state):
+                if successor not in visited:
+                    newCost = cost + stepCost
+                    pq.push((successor, path + [action], newCost), newCost)
+    return []
+    """util.raiseNotDefined()"""
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,8 +151,23 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
+    pq = PriorityQueue()
+    visited = set()
+    start = problem.getInitialState()
+    pq.push((start, [], 0), heuristic(start, problem))
+    while not pq.isEmpty():
+        state, path, cost = pq.pop()
+        if problem.isGoalState(state):
+            return path
+        if state not in visited:
+            visited.add(state)
+            for successor, action, stepCost in problem.getNextStates(state):
+                if successor not in visited:
+                    newCost = cost + stepCost
+                    priority = newCost + heuristic(successor, problem)
+                    pq.push((successor, path + [action], newCost), priority)
+    return []
+    """util.raiseNotDefined()"""
 
 # Abbreviations
 bfs = breadthFirstSearch
